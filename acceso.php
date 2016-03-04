@@ -1,44 +1,29 @@
-<html>
-    <head>
-        <meta charset="UTF-8">
-    </head>
-    <body>
  <?php
-/* 
-este fichero realizará la conexión a la base de datos
- * Toma los valores del fichero acceso.php
- */
-include 'config.php';
+/* este fichero realizará la conexión a la base de datos
+ Toma los valores del fichero acceso.php */
+ if (isset($_REQUEST['nombre']) && !empty($_POST['nombre'])){
+ require 'config.php';
+ //conexion a la base de datos
 $conexion = new mysqli($DB_HOST, $DB_USER, $DB_PASSWORD, $DB_NAME);
-if ($conexion->connect_errno){
-//si se produce algun error finaliza con mensaje de error
-    die("Error de Conexion:" .$conexion->connect_error);
-}
+//tabla con la que trabajaremos
+$pet = mysqli_real_escape_string($conexion, $_REQUEST['nombre']);
 //consulta SQL
-$sql = "SELECT * " . "FROM pet";
-$result = $conexion->query($sql);
-echo "";
-echo '<table border ="1">'; //iniciar tabla
-echo '<tr>';
-echo "<td>name</td>";
-echo "<td>owner</td>";
-echo "<td>species</td>";
-echo "<td>sex</td>";
-echo "<td>birth</td>";
-echo "<td>death</td>";
-echo '</tr>';
-while($datos = $result->fetch_assoc()){
-    echo '<tr>';
-    echo "<td>".$datos['name']."</td>";
-    echo "<td>".$datos['owner']."</td>";
-    echo "<td>".$datos['species']."</td>";
-    echo "<td>".$datos['sex']."</td>";
-    echo "<td>".$datos['birth']."</td>";
-    echo "<td>".$datos['death']."</td>";
-    echo '</tr>';
+$result = mysqli_query($conexion, "SELECT * FROM pet WHERE name ='".$pet."'");
+if ($result -> num_rows == 0){
+    echo "No a introducido un parametro valido.</br>";
+}  else {
+    echo "<form action='modifica.php method='post'>";
+    while($datos = mysqli_fetch_array($result)){
+    echo "-Name: <input type='text' name='name' value='".$datos['name']."</br>";
+    echo "-Owner: <input type='text' name='owner' value='".$datos['owner']."</br>";
+    echo "-Species: <input type='text' name='species' value=' ".$datos['species']."</br>";
+    echo "-Sex: <input type='text' name='sex' value=' ".$datos['sex']."</br>";
+    echo "-Birth: <input type='text' name='birth' value=' ".$datos['birth']."</br>";
+    echo "-Death: <input type='text' name='death' value=' ".$datos['death']."</br>";
+    }}
+mysqli_close($conexion);
+echo "<input type='submit value='Guarda cambios'> ";
+echo "<input type='reset' value='cancelar cambios'></form>";
+}else{
+    echo "No se a introducido ningun parametro"."<br/>";
 }
-//fin de la tabla
-echo "</table>";
-?>
- </body>
-</html>
