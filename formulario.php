@@ -31,7 +31,7 @@ if (isset($_POST['name']) && !empty($_POST['name'])){
 }
 }
 if(!$fieldsOk){
-    die("Error: Hay campos en blanco<br/>");
+    die("Error: Hay campos en blanco <br/>");
 }
 $strinOrig = $datos["name"].$datos["owner"].$datos["species"].$datos["sex"].$datos["birth"].$datos["death"];
 $strinNew = $name.$owner.$species.$sex.$birth.$death;

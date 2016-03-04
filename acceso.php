@@ -12,17 +12,17 @@ $result = mysqli_query($conexion, "SELECT * FROM pet WHERE name ='".$pet."'");
 if ($result -> num_rows == 0){
     echo "No a introducido un parametro valido.</br>";
 }  else {
-    echo "<form action='modifica.php method='post'>";
+    echo "<form action='modifica.php' method='post'>";
     while($datos = mysqli_fetch_array($result)){
-    echo "-Name: <input type='text' name='name' value='".$datos['name']."</br>";
-    echo "-Owner: <input type='text' name='owner' value='".$datos['owner']."</br>";
-    echo "-Species: <input type='text' name='species' value=' ".$datos['species']."</br>";
-    echo "-Sex: <input type='text' name='sex' value=' ".$datos['sex']."</br>";
-    echo "-Birth: <input type='text' name='birth' value=' ".$datos['birth']."</br>";
-    echo "-Death: <input type='text' name='death' value=' ".$datos['death']."</br>";
+    echo "-Name: <input type='text' name='name' value='".$datos['name']."' readonly></br>";
+    echo "-Owner: <input type='text' name='owner' value='".$datos['owner']."'></br>";
+    echo "-Species: <input type='text' name='species' value=' ".$datos['species']."'></br>";
+    echo "-Sex: <input type='text' name='sex' value=' ".$datos['sex']."'></br>";
+    echo "-Birth: <input type='text' name='birth' value=' ".$datos['birth']."'></br>";
+    echo "-Death: <input type='text' name='death' value=' ".$datos['death']."'></br>";
     }}
 mysqli_close($conexion);
-echo "<input type='submit value='Guarda cambios'> ";
+echo "<input type='submit' value='Guarda cambios'> ";
 echo "<input type='reset' value='cancelar cambios'></form>";
 }else{
     echo "No se a introducido ningun parametro"."<br/>";

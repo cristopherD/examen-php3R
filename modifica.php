@@ -37,13 +37,13 @@ $strinNew = $name.$owner.$species.$sex.$birth.$death;
 if ($strinNew == $strinOrig){
     die("Error: No ha modificado ningun campo");
 }
-$result = mysli_query($conexion, "UPDATE pet SET name = '").$name.
+$result = mysli_query($conexion, "UPDATE pet SET name ='").$name.
         "', owner='".$owner.
         "', species='".$species.
         "', sex='".$sex.
         "', birth='".$birth.
         "', death='".$death.
-        "' WHERE name = '".$pet."'");
+        "' WHERE nombre ='".$pet."'");
 echo  "Rgistro actualizado <br/>";
           }
     }else{
