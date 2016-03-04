@@ -11,10 +11,12 @@ and open the template in the editor.
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
-        <form action = "acceso.php" method = "post">
-            <strong>Nombre: </strong>
-            <input type="text" value="Nombre de tu mascota" name="nombre" required="required" >
-            <input type="submit" value="Enviar"><input type="reset" value="Borrar"  >
+        <form method="post" action="acceso.php">
+            <p> Introduzca la fecha de nacimiento </p>
+           Año <input type="number" name="anyo"></br>
+           Mes<input type="number" name="mes"></br>
+           Dia<input type="number" name="dia"></br>
+              <input type="submit" name="enviar">
         </form>
     </body>
 </html>

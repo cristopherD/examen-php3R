@@ -1,53 +1,58 @@
 <?php
-// fichero para actualizar las tablas de la base de datos desde el navegador
-if (isset($_POST['nombre']) && !empty($_POST['nombre'])){
-    
-    require 'config.php';
-$conexion = new mysqli($DB_HOST, $DB_USER, $DB_PASSWORD, $DB_NAME);
-$pet = mysqli_real_escape_string($conexion, $_POST['nombre']);
+session_start();
+include 'config.php';
+//VARIABLES DEL FORMULARIO
+$anyo = $_REQUEST['anyo'];
+$mes = $_REQUEST['mes'];
+$dia = $_REQUEST['dia'];
+$fecha = $anyo . "-" . $mes ."-" . $dia;
 
-$result = mysqli_query($conexion, "SELECT * FROM pet WHERE nombre ='".$pet."'");
-if ($result -> num_rows == 0){
-    echo "Nombre invalido. <br/>";
-}else{
-    $datos = mysqli_fetch_array($result);
-    $fieldsOk = 0;
-    if (isset($_POST['name']) && !empty($_POST['name'])){
-        $name = mysqli_real_escape_string($conexion, $_POST['name']);
-          if (isset($_POST['owner']) && !empty($_POST['owner'])){
-           $owner = mysqli_real_escape_string($conexion, $_POST['owner']);
-            if (isset($_POST['species']) && !empty($_POST['species'])){
-            $species = mysqli_real_escape_string($conexion, $_POST['species']);
-            if (isset($_POST['sex']) && !empty($_POST['sex'])){
-             $sex = mysqli_real_escape_string($conexion, $_POST['sex']);
-                if (isset($_POST['birth']) && !empty($_POST['birth'])){
-                $birth = mysqli_real_escape_string($conexion, $_POST['birth']);
-                    if (isset($_POST['death']) && !empty($_POST['death'])){
-                    $death = mysqli_real_escape_string($conexion, $_POST['death']);
-                    $fieldsOk =1;
-    }
-  }
- }
+//CONEXION A LA BD
+$conex = new mysqli($DB_HOST, $DB_USER, $DB_PASSWORD, $DB_NAME);
+if($conex->connect_errno){
+    die("Error al conectarnos a la base de datos: ".$conex->connect_errno);
 }
-if (!$fieldsOk){
-    die ("Error: hay campos en blanco<br/>");
+//EVITAMOS INYECCION
+$safe_fecha = mysqli_real_escape_string($conex, $fecha);
+
+//SENTENCIA SQL
+$sql = "SELECT * FROM pet WHERE birth = '$safe_fecha' ";
+
+//Enviamos consulta
+$result = $conex->query($sql);
+
+//Comprobamos resultados
+if(($anyo=='') || ($mes=='') || ($dia=='')){
+    echo 'No ha introducido alguno de los datos';
 }
-$strinOrig = $datos["name"].$datos["owner"].$datos["species"].$datos["sex"].$datos["birth"].$datos["death"];
-$strinNew = $name.$owner.$species.$sex.$birth.$death;
-if ($strinNew == $strinOrig){
-    die("Error: No ha modificado ningun campo");
+elseif($result->num_rows==0){
+    echo "No existen datos para la fecha que ha introducido";
 }
-$result = mysli_query($conexion, "UPDATE pet SET name ='").$name.
-        "', owner='".$owner.
-        "', species='".$species.
-        "', sex='".$sex.
-        "', birth='".$birth.
-        "', death='".$death.
-        "' WHERE nombre ='".$pet."'");
-echo  "Rgistro actualizado <br/>";
-          }
-    }else{
-        echo "No se ha introducido nombre" ."<br/>";
-        
-    }
-        
+elseif($result->num_rows>0){
+    while ($row = $result->fetch_assoc()) {
+//Asignamos nuevas variables para hacer mas sencillo el formulario
+        $name = $row['name'];
+        $owner = $row['owner'];
+        $species = $row['species'];
+        $sex = $row['sex'];
+        $birth = $row['birth'];
+    }       
+echo "<form method='post' action=modifica.php>"
+        . "Nombre:<input name='nombre' type=text value='$name'/> </br>"
+        . "Duenyo:<input name='duenyo' type=text value='$owner'/> </br>"
+        . "Especie:<input name='especie' type=text value='$species'/> </br>"
+        . "Sexo:<select name='sexo'>"
+        . "<option>m</option>"
+        . "<option>f</option>"
+        . " </select></br>"
+        . "Cumpleanyos:<input type=text value='$birth' readonly/> </br>"
+        . "<input type='submit' name='enviar'>";
+
+
+}
+//VAMOS A GUARDAR ESTAS VARIABLES PARA USARLAS MAS ADELANTE
+$_SESSION['name'] = $name;
+$_SESSION['owner'] = $owner;
+$_SESSION['species'] = $species;
+$_SESSION['sex'] = $sex;
+$_SESSION['fecha'] = $fecha;
